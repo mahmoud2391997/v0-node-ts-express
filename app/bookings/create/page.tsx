@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function CreateBookingPage() {
   const [roomId, setRoomId] = useState('');
@@ -12,8 +12,14 @@ export default function CreateBookingPage() {
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
+    const searchRoomId = searchParams.get('roomId');
+    if (searchRoomId) {
+      setRoomId(searchRoomId);
+    }
+
     async function fetchUsers() {
       const res = await fetch('/api/users');
       if (res.ok) {
@@ -30,7 +36,7 @@ export default function CreateBookingPage() {
     }
     fetchUsers();
     fetchRooms();
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

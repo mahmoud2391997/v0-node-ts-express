@@ -1,8 +1,8 @@
 
 import mongoose, { Schema } from "mongoose";
-import { GadgetType, GadgetStatus } from "../types";
+import { Gadget, GadgetType, GadgetStatus } from "@/types/models";
 
-const gadgetSchema = new Schema(
+const gadgetSchema = new Schema<Gadget>(
   {
     name: { type: String, required: true },
     type: { 
@@ -19,8 +19,22 @@ const gadgetSchema = new Schema(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: {
+      virtuals: true,
+      transform: function (doc, ret) {
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+      transform: function (doc, ret) {
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    },
   }
 );
 
@@ -28,4 +42,4 @@ gadgetSchema.virtual('id').get(function() {
   return this._id.toHexString();
 });
 
-export const GadgetModel = mongoose.models.Gadget || mongoose.model("Gadget", gadgetSchema);
+export const GadgetModel = mongoose.models.Gadget || mongoose.model<Gadget>("Gadget", gadgetSchema);

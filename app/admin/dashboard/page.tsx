@@ -1,3 +1,4 @@
+
 import AdminLayout from '@/components/admin-layout';
 import Link from 'next/link';
 
@@ -8,42 +9,42 @@ export default function AdminDashboard() {
       value: '12',
       icon: '🏠',
       color: 'bg-blue-500',
-      href: '/rooms',
+      href: '/admin/rooms',
     },
     {
       label: 'Active Bookings',
       value: '8',
       icon: '📅',
       color: 'bg-green-500',
-      href: '/bookings',
+      href: '/admin/bookings',
     },
     {
       label: 'Smart Devices',
       value: '34',
       icon: '🔌',
       color: 'bg-purple-500',
-      href: '/devices',
+      href: '/admin/devices',
     },
     {
       label: 'Gadgets',
       value: '15',
       icon: '⚙️',
       color: 'bg-orange-500',
-      href: '/gadgets',
+      href: '/admin/gadgets',
     },
     {
       label: 'Users',
       value: '25',
       icon: '👥',
       color: 'bg-pink-500',
-      href: '/users',
+      href: '/admin/users',
     },
     {
       label: 'Pending Maintenance',
       value: '5',
       icon: '🔧',
       color: 'bg-red-500',
-      href: '/maintenances',
+      href: '/admin/maintenances',
     },
   ];
 
@@ -75,7 +76,7 @@ export default function AdminDashboard() {
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dashboard
+            Smart Room Management
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             Welcome back! Here's what's happening in your smart room system.
@@ -145,25 +146,25 @@ export default function AdminDashboard() {
             </h2>
             <div className="space-y-3">
               <Link
-                href="/rooms/create"
+                href="/admin/rooms/create"
                 className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-center transition"
               >
                 + Create Room
               </Link>
               <Link
-                href="/bookings/create"
+                href="/admin/bookings/create"
                 className="block w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg text-center transition"
               >
                 + Book Room
               </Link>
               <Link
-                href="/users/create"
+                href="/admin/users/create"
                 className="block w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg text-center transition"
               >
                 + Add User
               </Link>
               <Link
-                href="/devices/create"
+                href="/admin/devices/create"
                 className="block w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg text-center transition"
               >
                 + Add Device
@@ -172,6 +173,9 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      <footer className="text-center text-gray-500 dark:text-gray-400 mt-8">
+        © 2025 Smart Room Management System
+      </footer>
     </AdminLayout>
   );
 }

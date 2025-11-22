@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { AuditLogModel } from "@/models/Audit";
+import { AuditLog } from "@/types/models";
 
 export async function GET(request: NextRequest) {
   try {
@@ -55,9 +56,9 @@ export async function GET(request: NextRequest) {
 
     if (format === 'csv') {
       const csvHeader = 'User ID,Action,Entity,Entity ID,Timestamp,Details\n';
-      const csvRows = audits.map(log => {
+      const csvRows = audits.map((log: AuditLog) => {
         const details = JSON.stringify(log.meta || {}).replace(/"/g, '""');
-        return `"${log.userId}","${log.action}","${log.entity}","${log.entityId}","${new Date(log.createdAt).toISOString()}","${details}"`;
+        return `"${log.user}","${log.action}","${log.entity}","${log.entityId}","${new Date(log.createdAt).toISOString()}","${details}"`;
       });
       const csv = csvHeader + csvRows.join('\n');
 

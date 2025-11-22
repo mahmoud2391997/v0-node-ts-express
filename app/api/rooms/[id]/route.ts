@@ -1,8 +1,8 @@
 
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { RoomModel } from "@/src/models/Room";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { RoomModel } from "@/models/Room";
+import { AuditLogModel } from "@/models/Audit";
 
 export async function GET(request: NextRequest, { params: paramsPromise }: { params: Promise<{ id: string }> }) {
   try {

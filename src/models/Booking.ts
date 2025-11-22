@@ -1,12 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { Booking, BookingStatus, BookingHistory } from "../types/index";
-import { BookingDocument, BookingHistoryDocument } from "../types/models";
+import { Booking, BookingStatus, BookingHistory } from "@/types/models";
 
-// Import models to ensure they are registered before being used
-import "./User";
-import "./Room";
-
-const bookingSchema = new Schema(
+const bookingSchema = new Schema<Booking>(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     room: { type: Schema.Types.ObjectId, ref: 'Room', required: true },
@@ -22,66 +17,69 @@ const bookingSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
-
-        // This handles both populated documents (ret.user.id) and ObjectIds (ret.user).
-        if (ret.user) {
-          ret.userId = (ret.user.id || ret.user).toString();
-        }
-        if (ret.room) {
-          ret.roomId = (ret.room.id || ret.room).toString();
-        }
-
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
-
-        if (ret.user) {
-          ret.userId = (ret.user.id || ret.user).toString();
-        }
-        if (ret.room) {
-          ret.roomId = (ret.room.id || ret.room).toString();
-        }
-
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-const bookingHistorySchema = new Schema(
+bookingSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+bookingSchema.virtual('userId').get(function () {
+  return this.user.toString();
+});
+
+bookingSchema.virtual('roomId').get(function () {
+  return this.room.toString();
+});
+
+const bookingHistorySchema = new Schema<BookingHistory>(
   {
-    bookingId: { type: String, required: true },
-    timestamp: { type: String, required: true },
-    changedBy: { type: String, required: true },
+    booking: { type: Schema.Types.ObjectId, ref: 'Booking', required: true },
+    timestamp: { type: Date, required: true },
+    changedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     oldStatus: { type: String, required: true },
     newStatus: { type: String, required: true },
   },
   {
     timestamps: false,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   },
 );
 
+bookingHistorySchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
 
-export const BookingModel = mongoose.models.Booking || mongoose.model<BookingDocument>('Booking', bookingSchema);
-export const BookingHistoryModel = mongoose.models.BookingHistory || mongoose.model<BookingHistoryDocument>('BookingHistory', bookingHistorySchema);
+
+export const BookingModel = mongoose.models.Booking || mongoose.model<Booking>('Booking', bookingSchema);
+export const BookingHistoryModel = mongoose.models.BookingHistory || mongoose.model<BookingHistory>('BookingHistory', bookingHistorySchema);

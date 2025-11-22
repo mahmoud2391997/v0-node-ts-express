@@ -1,8 +1,7 @@
-
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { BookingModel } from "@/src/models/Booking";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { BookingModel } from "@/models/Booking";
+import { AuditLogModel } from "@/models/Audit";
 
 export async function GET(request: NextRequest) {
   try {
@@ -47,7 +46,7 @@ export async function POST(request: NextRequest) {
     await booking.save();
 
     const auditLog = new AuditLogModel({
-      userId: userId,
+      user: userId,
       action: "create",
       entity: "booking",
       entityId: booking._id,

@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-import { Room, RoomStatus } from "../types/index";
-import { RoomDocument } from "../types/models";
+import { Room } from "@/types/models";
+import { RoomStatus } from "@/types";
 
-const roomSchema = new Schema(
+const roomSchema = new Schema<Room>(
   {
     name: { type: String, required: true, unique: true },
     capacity: { type: Number, required: true },
@@ -13,20 +13,26 @@ const roomSchema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-export const RoomModel = mongoose.models.Room || mongoose.model<RoomDocument>("Room", roomSchema);
+roomSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+export const RoomModel = mongoose.models.Room || mongoose.model<Room>("Room", roomSchema);

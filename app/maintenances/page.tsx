@@ -1,15 +1,36 @@
+
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { connectDB } from "@/src/lib/mongodb";
-import { MaintenanceModel } from "@/src/models/Maintenance";
 
-async function getMaintenances() {
-  await connectDB();
-  const maintenances = await MaintenanceModel.find({}).populate('device room gadget');
-  return maintenances;
-}
+export default function MaintenancesPage() {
+  const [maintenances, setMaintenances] = useState([]);
 
-export default async function MaintenancesPage() {
-  const maintenances = await getMaintenances();
+  useEffect(() => {
+    async function getMaintenances() {
+      const res = await fetch('/api/maintenances');
+      if (!res.ok) {
+        console.error('Failed to fetch maintenances');
+        return;
+      }
+      const data = await res.json();
+      setMaintenances(data.maintenances);
+    }
+    getMaintenances();
+  }, []);
+
+  const handleDelete = async (maintenanceId: string) => {
+    const res = await fetch(`/api/maintenances/${maintenanceId}`, {
+      method: 'DELETE',
+    });
+
+    if (res.ok) {
+      setMaintenances(maintenances.filter((maintenance: any) => (maintenance._id || maintenance.id) !== maintenanceId));
+    } else {
+      console.error('Failed to delete maintenance');
+    }
+  };
 
   const getAsset = (maintenance: any) => {
     if (maintenance.device) return maintenance.device;
@@ -40,7 +61,7 @@ export default async function MaintenancesPage() {
                 Date
               </th>
               <th scope="col" className="relative px-6 py-3">
-                <span className="sr-only">Edit</span>
+                <span className="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
@@ -60,9 +81,12 @@ export default async function MaintenancesPage() {
                     {new Date(maintenance.date).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link href={`/maintenances/${maintenanceId}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                    <Link href={`/maintenances/${maintenanceId}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-4">
                       Edit
                     </Link>
+                    <button onClick={() => handleDelete(maintenanceId)} className="text-red-600 hover:text-red-900">
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );

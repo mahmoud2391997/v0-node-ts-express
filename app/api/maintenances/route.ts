@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { MaintenanceModel } from "@/src/models/Maintenance";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { MaintenanceModel } from "@/models/Maintenance";
+import { AuditLogModel } from "@/models/Audit";
 import mongoose from "mongoose";
 
 export async function GET() {
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const populatedMaintenance = await MaintenanceModel.findById(new mongoose.Types.ObjectId(maintenance._id)).populate('device room gadget');
 
     const auditLog = new AuditLogModel({
-      userId: "system",
+      user: "system",
       action: "create",
       entity: "maintenance",
       entityId: maintenance._id,

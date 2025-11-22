@@ -1,8 +1,8 @@
 
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { UserModel } from "@/src/models/User";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { UserModel } from "@/models/User";
+import { AuditModel } from "@/models/Audit";
 
 export async function GET() {
   try {
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         const newUser = new UserModel(body);
         const savedUser = await newUser.save();
 
-        const auditLog = new AuditLogModel({
+        const auditLog = new AuditModel({
           userId: "system",
           action: "create",
           entity: "user",

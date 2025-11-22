@@ -3,16 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export default function RoomsPage() {
   const [rooms, setRooms] = useState([]);
-  const router = useRouter();
 
   useEffect(() => {
     async function getRooms() {
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
-      const res = await fetch(`${baseUrl}/api/rooms`);
+      const res = await fetch('/api/rooms');
       if (!res.ok) {
         console.error('Failed to fetch rooms');
         return;
@@ -25,8 +22,7 @@ export default function RoomsPage() {
 
   const handleDelete = async (roomId: string) => {
     if (confirm('Are you sure you want to delete this room?')) {
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
-      const res = await fetch(`${baseUrl}/api/rooms/${roomId}`, {
+      const res = await fetch(`/api/rooms/${roomId}`, {
         method: 'DELETE',
       });
 
@@ -59,6 +55,15 @@ export default function RoomsPage() {
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Floor
               </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Created At
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Updated At
+              </th>
               <th scope="col" className="relative px-6 py-3">
                 <span className="sr-only">Actions</span>
               </th>
@@ -76,7 +81,25 @@ export default function RoomsPage() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {room.floor}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {room.status}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(room.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(room.updatedAt).toLocaleDateString()}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <Link href={`/gadgets/create?roomId=${room.id}`} className="text-blue-600 hover:text-blue-900 mr-4">
+                    Add Gadget
+                  </Link>
+                  <Link href={`/devices?roomId=${room.id}`} className="text-green-600 hover:text-green-900 mr-4">
+                    Control Devices
+                  </Link>
+                  <Link href={`/bookings/create?roomId=${room.id}`} className="text-yellow-600 hover:text-yellow-900 mr-4">
+                    Make Booking
+                  </Link>
                   <Link href={`/rooms/${room.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-4">
                     Edit
                   </Link>

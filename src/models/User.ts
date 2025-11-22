@@ -1,36 +1,41 @@
 import mongoose, { Schema } from "mongoose";
-import { User, UserRole, EmployeeProfile } from "../types/index";
-import { UserDocument, EmployeeProfileDocument } from "../types/models";
+import { User, UserRole, UserStatus, EmployeeProfile } from "@/types/models";
 
-const userSchema = new Schema(
+const userSchema = new Schema<User>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.VIEWER },
-    status: { type: String, enum: ["active", "suspended"], default: "active" },
+    status: { type: String, enum: Object.values(UserStatus), default: UserStatus.ACTIVE },
   },
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-const employeeProfileSchema = new Schema(
+userSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+const employeeProfileSchema = new Schema<EmployeeProfile>(
   {
-    userId: { type: String, required: true, unique: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     department: { type: String, required: true },
     jobTitle: { type: String, required: true },
     phone: String,
@@ -39,21 +44,27 @@ const employeeProfileSchema = new Schema(
   {
     timestamps: false,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-export const UserModel = mongoose.models.User || mongoose.model<UserDocument>("User", userSchema);
-export const EmployeeProfileModel = mongoose.models.EmployeeProfile || mongoose.model<EmployeeProfileDocument>("EmployeeProfile", employeeProfileSchema);
+employeeProfileSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+export const UserModel = mongoose.models.User || mongoose.model<User>("User", userSchema);
+export const EmployeeProfileModel = mongoose.models.EmployeeProfile || mongoose.model<EmployeeProfile>("EmployeeProfile", employeeProfileSchema);

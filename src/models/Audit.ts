@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { AuditLog } from "../types/index";
+import { AuditLog } from "@/types/models";
 
 export interface AuditLogDocument extends AuditLog, Document {
   id: string;

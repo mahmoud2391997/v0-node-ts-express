@@ -9,8 +9,7 @@ export default function BookingsPage() {
 
   useEffect(() => {
     async function getBookings() {
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-      const res = await fetch(`${baseUrl}/api/bookings`);
+      const res = await fetch(`/api/bookings`);
       if (!res.ok) {
         console.error('Failed to fetch bookings');
         return;
@@ -22,8 +21,7 @@ export default function BookingsPage() {
   }, []);
 
   const handleDelete = async (bookingId: string) => {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/bookings/${bookingId}`, {
+    const res = await fetch(`/api/bookings/${bookingId}`, {
       method: 'DELETE',
     });
 

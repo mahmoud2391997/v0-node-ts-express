@@ -3,14 +3,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function DevicesPage() {
   const [devices, setDevices] = useState([]);
+  const searchParams = useSearchParams();
+  const roomId = searchParams.get('roomId');
 
   useEffect(() => {
     async function getDevices() {
-      const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-      const res = await fetch(`/api/devices`);
+      const url = roomId ? `/api/devices?roomId=${roomId}` : '/api/devices';
+      const res = await fetch(url);
       if (!res.ok) {
         console.error('Failed to fetch devices');
         return;
@@ -19,10 +22,9 @@ export default function DevicesPage() {
       setDevices(data.devices);
     }
     getDevices();
-  }, []);
+  }, [roomId]);
 
   const handleDelete = async (deviceId: string) => {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
     const res = await fetch(`/api/devices/${deviceId}`, {
       method: 'DELETE',
     });
@@ -38,7 +40,7 @@ export default function DevicesPage() {
     <div className="container mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Devices</h1>
-        <Link href="/devices/create" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+        <Link href={`/devices/create${roomId ? `?roomId=${roomId}` : ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
           Create Device
         </Link>
       </div>
@@ -57,6 +59,15 @@ export default function DevicesPage() {
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Location
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Room IDs
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Created At
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Updated At
               </th>
               <th scope="col" className="relative px-6 py-3">
                 <span className="sr-only">Actions</span>
@@ -77,6 +88,15 @@ export default function DevicesPage() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {device.location}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {device.roomIds.join(', ')}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(device.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  {new Date(device.updatedAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <Link href={`/devices/${device.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-4">

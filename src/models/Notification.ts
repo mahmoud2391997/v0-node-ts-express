@@ -1,45 +1,39 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { Notification, NotificationTemplate, NotificationLog } from "../types/index";
+import mongoose, { Schema } from "mongoose";
+import { Notification, NotificationType, NotificationStatus, NotificationTemplate, NotificationLog } from "@/types/models";
 
-export interface NotificationDocument extends Notification, Document {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-export interface NotificationTemplateDocument extends NotificationTemplate, Document {
-    id: string;
-}
-export interface NotificationLogDocument extends NotificationLog, Document {
-    id: string;
-}
-
-const notificationSchema = new Schema(
+const notificationSchema = new Schema<Notification>(
   {
-    userId: { type: String, required: true },
-    type: { type: String, enum: ["email", "sms", "push"], required: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    type: { type: String, enum: Object.values(NotificationType), required: true },
     message: { type: String, required: true },
-    status: { type: String, enum: ["sent", "failed"], default: "sent" },
+    status: { type: String, enum: Object.values(NotificationStatus), default: NotificationStatus.SENT },
   },
   {
     timestamps: true,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-const notificationTemplateSchema = new Schema(
+notificationSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+const notificationTemplateSchema = new Schema<NotificationTemplate>(
   {
     key: { type: String, required: true, unique: true },
     content: { type: String, required: true },
@@ -47,50 +41,62 @@ const notificationTemplateSchema = new Schema(
   {
     timestamps: false,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-const notificationLogSchema = new Schema(
+notificationTemplateSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+const notificationLogSchema = new Schema<NotificationLog>(
   {
-    notificationId: { type: String, required: true },
-    sentAt: { type: String, required: true },
+    notification: { type: Schema.Types.ObjectId, ref: 'Notification', required: true },
+    sentAt: { type: Date, required: true },
     providerResponse: { type: String, required: true },
   },
   {
     timestamps: false,
     toJSON: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
     toObject: {
-      transform: function (doc, ret: any) {
-        ret.id = ret._id.toString();
+      virtuals: true,
+      transform: function (doc, ret) {
         delete ret._id;
         delete ret.__v;
+        return ret;
       },
     },
   }
 );
 
-export const NotificationModel = mongoose.model<NotificationDocument>("Notification", notificationSchema);
-export const NotificationTemplateModel = mongoose.model<NotificationTemplateDocument>(
+notificationLogSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+export const NotificationModel = mongoose.models.Notification || mongoose.model<Notification>("Notification", notificationSchema);
+export const NotificationTemplateModel = mongoose.models.NotificationTemplate || mongoose.model<NotificationTemplate>(
   "NotificationTemplate",
   notificationTemplateSchema,
 );
-export const NotificationLogModel = mongoose.model<NotificationLogDocument>("NotificationLog", notificationLogSchema);
+export const NotificationLogModel = mongoose.models.NotificationLog || mongoose.model<NotificationLog>("NotificationLog", notificationLogSchema);

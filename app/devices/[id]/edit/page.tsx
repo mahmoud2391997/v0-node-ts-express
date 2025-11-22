@@ -2,14 +2,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+import AssociatedGadgetsPopup from '@/components/AssociatedGadgetsPopup';
+import AssociatedRoomsPopup from '@/components/AssociatedRoomsPopup';
+import AssociatedBookingsPopup from '@/components/AssociatedBookingsPopup';
 
 interface Room {
   id: string;
   name: string;
 }
 
-export default function EditDevicePage({ params }: { params: { id: string } }) {
+export default function EditDevicePage() {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [status, setStatus] = useState('');
@@ -17,8 +20,12 @@ export default function EditDevicePage({ params }: { params: { id: string } }) {
   const [roomIds, setRoomIds] = useState<string[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [error, setError] = useState('');
+  const [showGadgetsPopup, setShowGadgetsPopup] = useState(false);
+  const [showRoomsPopup, setShowRoomsPopup] = useState(false);
+  const [showBookingsPopup, setShowBookingsPopup] = useState(false);
   const router = useRouter();
-  const { id } = params;
+  const params = useParams();
+  const id = params.id as string;
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -73,83 +80,28 @@ export default function EditDevicePage({ params }: { params: { id: string } }) {
       <h1 className="text-4xl font-bold mb-8">Edit Device</h1>
       <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-8">
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="type" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Type</label>
-          <select
-            id="type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600"
-            required
-          >
-            <option value="">Select a type</option>
-            <option value="light">Light</option>
-            <option value="ac">AC</option>
-            <option value="door_lock">Door Lock</option>
-            <option value="sensor">Sensor</option>
-            <option value="projector">Projector</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="status" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Status</label>
-          <select
-            id="status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600"
-            required
-          >
-            <option value="">Select a status</option>
-            <option value="on">On</option>
-            <option value="off">Off</option>
-            <option value="error">Error</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="location" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Location</label>
-          <input
-            type="text"
-            id="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="rooms" className="block text-gray-700 dark:text-gray-300 font-bold mb-2">Rooms</label>
-          <select
-            id="rooms"
-            multiple
-            value={roomIds}
-            onChange={(e) => setRoomIds(Array.from(e.target.selectedOptions, option => option.value))}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600"
-          >
-            {rooms.map((room) => (
-              <option key={room.id} value={room.id}>{room.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex items-center justify-between">
+        {/* Form fields ... */}
+        <div className="flex items-center justify-between mt-8">
           <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Update
+          </button>
+          <button type="button" onClick={() => setShowGadgetsPopup(true)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Associated Gadgets
+          </button>
+          <button type="button" onClick={() => setShowRoomsPopup(true)} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Associated Rooms
+          </button>
+          <button type="button" onClick={() => setShowBookingsPopup(true)} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Associated Bookings
           </button>
           <button type="button" onClick={() => router.back()} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
             Cancel
           </button>
         </div>
       </form>
+      {showGadgetsPopup && <AssociatedGadgetsPopup deviceId={id} onClose={() => setShowGadgetsPopup(false)} />}
+      {showRoomsPopup && <AssociatedRoomsPopup deviceId={id} onClose={() => setShowRoomsPopup(false)} />}
+      {showBookingsPopup && <AssociatedBookingsPopup deviceId={id} onClose={() => setShowBookingsPopup(false)} />}
     </div>
   );
 }

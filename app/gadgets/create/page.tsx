@@ -2,8 +2,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { GadgetType, GadgetStatus } from '@/src/types';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { GadgetType, GadgetStatus } from '@/types';
 
 interface User {
   id: string;
@@ -12,12 +12,14 @@ interface User {
 
 export default function CreateGadgetPage() {
   const [name, setName] = useState('');
-  const [type, setType] = useState<GadgetType |''>('');
-  const [status, setStatus] = useState<GadgetStatus |''>('');
-  const [assignedTo, setAssignedTo] = useState<string |''>('');
+  const [type, setType] = useState<GadgetType | ''>('');
+  const [status, setStatus] = useState<GadgetStatus | ''>('');
+  const [assignedTo, setAssignedTo] = useState<string | ''>('');
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const roomId = searchParams.get('roomId');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -37,7 +39,7 @@ export default function CreateGadgetPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, type, status, assignedTo }),
+      body: JSON.stringify({ name, type, status, assignedTo, roomId }),
     });
 
     if (res.ok) {

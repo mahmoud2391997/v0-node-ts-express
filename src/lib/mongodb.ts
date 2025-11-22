@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://Cluster44370:rPxVwmau0taAOsUJ@cluster44370.a6jdq.mongodb.net/?authMechanism=SCRAM-SHA-1"
+// Replace with your own MongoDB connection string
+const MONGODB_URI = process.env.MONGODB_URI || "YOUR_MONGODB_CONNECTION_STRING"
 
 if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable inside .env")

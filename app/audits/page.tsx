@@ -1,10 +1,10 @@
 
-import { connectDB } from "@/src/lib/mongodb";
-import { AuditLogModel } from "@/src/models/Audit";
+import { connectDB } from "@/lib/mongodb";
+import { AuditModel } from "@/models/Audit";
 
 async function getAudits() {
   await connectDB();
-  const audits = await AuditLogModel.find({});
+  const audits = await AuditModel.find({});
   return audits;
 }
 

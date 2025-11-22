@@ -1,7 +1,7 @@
 
 import { type NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/src/lib/mongodb";
-import { GadgetModel } from "@/src/models/Gadget";
+import { connectDB } from "@/lib/mongodb";
+import { GadgetModel } from "@/models/Gadget";
 
 export async function GET(request: NextRequest) {
   try {

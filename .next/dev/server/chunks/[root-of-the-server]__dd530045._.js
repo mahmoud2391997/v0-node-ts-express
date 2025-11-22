@@ -56,7 +56,8 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/mongoose [external] (mongoose, cjs)");
 ;
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://Cluster44370:rPxVwmau0taAOsUJ@cluster44370.a6jdq.mongodb.net/?authMechanism=SCRAM-SHA-1";
+// Replace with your own MongoDB connection string
+const MONGODB_URI = process.env.MONGODB_URI || "YOUR_MONGODB_CONNECTION_STRING";
 if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
 ;
 let cached = /*TURBOPACK member replacement*/ __turbopack_context__.g.mongooseGlobal;
@@ -194,19 +195,24 @@ const roomSchema = new __TURBOPACK__imported__module__$5b$externals$5d2f$mongoos
 }, {
     timestamps: true,
     toJSON: {
+        virtuals: true,
         transform: function(doc, ret) {
-            ret.id = ret._id.toString();
             delete ret._id;
             delete ret.__v;
+            return ret;
         }
     },
     toObject: {
+        virtuals: true,
         transform: function(doc, ret) {
-            ret.id = ret._id.toString();
             delete ret._id;
             delete ret.__v;
+            return ret;
         }
     }
+});
+roomSchema.virtual('id').get(function() {
+    return this._id.toHexString();
 });
 const RoomModel = __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$29$__["default"].models.Room || __TURBOPACK__imported__module__$5b$externals$5d2f$mongoose__$5b$external$5d$__$28$mongoose$2c$__cjs$29$__["default"].model("Room", roomSchema);
 }),
@@ -265,7 +271,7 @@ __turbopack_context__.s([
     "POST",
     ()=>POST
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@16.0.3_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/next/server.js [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/mongodb.ts [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$models$2f$Room$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/models/Room.ts [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$models$2f$Audit$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/models/Audit.ts [app-route] (ecmascript)");
@@ -277,12 +283,12 @@ async function GET() {
     try {
         await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$mongodb$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["connectDB"])();
         const rooms = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$models$2f$Room$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["RoomModel"].find({});
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             rooms
         });
     } catch (error) {
         console.error("Error fetching rooms:", error);
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: "Failed to fetch rooms"
         }, {
             status: 500
@@ -296,7 +302,7 @@ async function POST(request) {
         const { name, capacity, ...rest } = body;
         if (!name || !capacity) {
             console.warn("Name or capacity missing from room request", body);
-            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "Name and capacity are required fields"
             }, {
                 status: 400
@@ -306,7 +312,7 @@ async function POST(request) {
             name: name
         });
         if (existingRoom) {
-            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "A room with the same name already exists"
             }, {
                 status: 409
@@ -319,7 +325,7 @@ async function POST(request) {
         });
         await room.save();
         const auditLog = new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$models$2f$Audit$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["AuditLogModel"]({
-            userId: "system",
+            user: "system",
             action: "create",
             entity: "room",
             entityId: room._id,
@@ -328,7 +334,7 @@ async function POST(request) {
             }
         });
         await auditLog.save();
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(room, {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json(room, {
             status: 201
         });
     } catch (error) {
@@ -336,13 +342,13 @@ async function POST(request) {
         let errorMessage = "Failed to create room";
         if (error.name === "ValidationError") {
             errorMessage = Object.values(error.errors).map((val)=>val.message).join(", ");
-            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: errorMessage
             }, {
                 status: 400
             });
         }
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$3_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0_$5f$react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: errorMessage
         }, {
             status: 500

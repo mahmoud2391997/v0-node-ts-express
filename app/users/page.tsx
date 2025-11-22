@@ -1,16 +1,36 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { connectDB } from "@/src/lib/mongodb";
-import { UserModel } from "@/src/models/User";
 
-async function getUsers() {
-  await connectDB();
-  const users = await UserModel.find({});
-  return users;
-}
+export default function UsersPage() {
+  const [users, setUsers] = useState([]);
 
-export default async function UsersPage() {
-  const users = await getUsers();
+  useEffect(() => {
+    async function getUsers() {
+      const res = await fetch('/api/users');
+      if (!res.ok) {
+        console.error('Failed to fetch users');
+        return;
+      }
+      const data = await res.json();
+      setUsers(data.users);
+    }
+    getUsers();
+  }, []);
+
+  const handleDelete = async (userId: string) => {
+    const res = await fetch(`/api/users/${userId}`, {
+      method: 'DELETE',
+    });
+
+    if (res.ok) {
+      setUsers(users.filter((user: any) => user.id !== userId));
+    } else {
+      console.error('Failed to delete user');
+    }
+  };
 
   return (
     <div className="container mx-auto p-8">
@@ -30,11 +50,11 @@ export default async function UsersPage() {
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text--gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Role
               </th>
               <th scope="col" className="relative px-6 py-3">
-                <span className="sr-only">Edit</span>
+                <span className="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
@@ -51,9 +71,12 @@ export default async function UsersPage() {
                   {user.role}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Link href={`/users/${user.id}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                  <Link href={`/users/${user.id}/edit`} className="text-indigo-600 hover:text-indigo-900 mr-4">
                     Edit
                   </Link>
+                  <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900">
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
