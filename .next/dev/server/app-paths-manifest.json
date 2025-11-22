@@ -1,0 +1,14 @@
+{
+  "/admin/audits/page": "app/admin/audits/page.js",
+  "/api/audits/route": "app/api/audits/route.js",
+  "/api/devices/route": "app/api/devices/route.js",
+  "/api/gadgets/route": "app/api/gadgets/route.js",
+  "/api/maintenances/[id]/route": "app/api/maintenances/[id]/route.js",
+  "/api/maintenances/route": "app/api/maintenances/route.js",
+  "/api/rooms/route": "app/api/rooms/route.js",
+  "/maintenances/[id]/edit/page": "app/maintenances/[id]/edit/page.js",
+  "/maintenances/create/page": "app/maintenances/create/page.js",
+  "/maintenances/page": "app/maintenances/page.js",
+  "/page": "app/page.js",
+  "/rooms/page": "app/rooms/page.js"
+}

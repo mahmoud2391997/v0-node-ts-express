@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/rooms/layout,_N_T_/rooms/create/layout,_N_T_/rooms/create/page,_N_T_/rooms/create"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/rooms/create/__PAGE__",
+    "/rooms/create",
+    "/rooms",
+    "/_index",
+    "/_head"
+  ]
+}
